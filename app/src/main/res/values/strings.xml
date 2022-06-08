@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">TrabFinal_Diario_VictorLelisSoares</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+
+    <string name="loginName">Digite o Email</string>
+    <string name="loginPassword">Digite a Senha</string>
+    <string name="btnAcess">Acessar</string>
+
+    <string name="btnRegister">Registrar</string>
+</resources>
