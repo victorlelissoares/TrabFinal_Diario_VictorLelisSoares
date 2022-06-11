@@ -43,8 +43,6 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "nome: " + nome + '\'' +
-                ", email: " + email + '\'' +
-                '}';
+        return "Nome: " + getNome() + ", Email: " + getEmail() + "\n";
     }
 }
