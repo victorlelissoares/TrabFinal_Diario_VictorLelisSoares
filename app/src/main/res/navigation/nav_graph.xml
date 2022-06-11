@@ -12,6 +12,9 @@
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_displayNotesFragment2"
+            app:destination="@id/displayNotesFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -22,4 +25,18 @@
             android:id="@+id/action_registerFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/displayNotesFragment"
+        android:name="com.example.trabfinal_diario_victorlelissoares.DisplayNotesFragment"
+        android:label="fragment_display_notes"
+        tools:layout="@layout/fragment_display_notes" >
+        <action
+            android:id="@+id/action_displayNotesFragment_to_newNoteFragment"
+            app:destination="@id/newNoteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newNoteFragment"
+        android:name="com.example.trabfinal_diario_victorlelissoares.NewNoteFragment"
+        android:label="fragment_new_note"
+        tools:layout="@layout/fragment_new_note" />
 </navigation>
