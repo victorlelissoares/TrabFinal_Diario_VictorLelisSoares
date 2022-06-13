@@ -6,6 +6,7 @@ public class User implements Serializable {
     private int idUser;
     private String nome;
     private String email;
+    private byte[] foto;
     private String senha;//substituir futuramente pelo hash da senha ao inves da própria
     //fora a foto do usuario
 
