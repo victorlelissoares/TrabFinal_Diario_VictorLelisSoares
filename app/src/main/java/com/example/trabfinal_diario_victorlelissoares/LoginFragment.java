@@ -39,8 +39,12 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
                 db = new DBHelper(getContext());
                 String password = db.buscarSenha(binding.txtEmail.getText().toString());
-                if(password.equals(binding.txtPassword.getText().toString()))
-                    NavHostFragment.findNavController(LoginFragment.this).navigate(R.id.action_loginFragment_to_displayNotesFragment);
+                if(password.equals(binding.txtPassword.getText().toString())) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("userNote", db.buscarUser(binding.txtEmail.getText().toString()));
+                    NavHostFragment.findNavController(LoginFragment.this).navigate(R.id.action_loginFragment_to_displayNotesFragment, bundle);
+                }
+
                 else{
                     Toast toast = Toast.makeText(getContext(),
                             "Email ou senha inválido", Toast.LENGTH_LONG);

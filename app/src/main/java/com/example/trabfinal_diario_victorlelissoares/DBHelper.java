@@ -27,6 +27,18 @@ public class DBHelper extends SQLiteOpenHelper {
             " text not null, " + COL_EMAIL_USERS + " text not null, " + COL_PASSWORD_USERS +
             " text not null);" ;
 
+    /*variaveis para a criação da tabela de notas*/
+    private static final String TABLE_NOTE_NAME = "notes";
+    private static final String COL_ID_NOTE = "id";
+    private static final String COL_ID_USER_NOTE = "idUser";
+    private static final String COL_TITLE_NOTE = "title";
+    private static final String COL_TEXT_NOTE = "texto";
+    private static final String TABLE_NOTES_CREATE = "create table " + TABLE_NOTE_NAME +
+            "("+ COL_ID_NOTE + " integer primary key autoincrement, " + COL_ID_USER_NOTE +
+            " integer not null, " + COL_TITLE_NOTE + " text not null, " + COL_TEXT_NOTE +
+            " text not null, " + "FOREIGN KEY(idUser) REFERENCES users(id));";
+
+
     SQLiteDatabase db;
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -34,7 +46,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(TABLE_USERS_CREATE);//query de criação da tabela
+        db.execSQL(TABLE_USERS_CREATE);//query de criação da tabela de usuarios
+        db.execSQL(TABLE_NOTES_CREATE);//query de criação da table de notas
         this.db = db;
     }
 
@@ -42,6 +55,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String query = "DROP TABLE IF EXISTS " + TABLE_USER_NAME;
         db.execSQL(query);
+
+        query = "DROP TABLE IF EXISTS " + TABLE_NOTE_NAME;
+        db.execSQL(query);
+
         this.onCreate(db);
     }
 
@@ -91,6 +108,38 @@ public class DBHelper extends SQLiteOpenHelper {
         return senha;
     }
 
+    public User buscarUser(String usuario){//email na real
+        db = this.getReadableDatabase();
+        String query = String.format("SELECT %s FROM %s WHERE %s = ?",
+                "*", TABLE_USER_NAME, COL_EMAIL_USERS);//todas as colunas
+        //String senha="não encontrado";
+        db.beginTransaction();
+        User use =  new User();
+        try {
+            Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(usuario)});
+            try {
+                if (cursor.moveToFirst()) {
+
+                    use.setIdUser(cursor.getInt(0));
+                    use.setNome(cursor.getString(1));
+                    use.setEmail(cursor.getString(2));
+                    use.setSenha(cursor.getString(3));
+                    //senha = cursor.getString(0);
+                    db.setTransactionSuccessful();
+                }
+            } finally {
+                if (cursor != null && !cursor.isClosed()) {
+                    cursor.close();
+                }
+            }
+        }catch (Exception e) {
+            Log.d(TAG, "Error while trying to add or update user");
+        } finally {
+            db.endTransaction();
+        }
+        return use;
+    }
+
     public long excluirUser(User contato) {
         long retornoBD;
         db = this.getWritableDatabase();
@@ -110,5 +159,26 @@ public class DBHelper extends SQLiteOpenHelper {
         retornoBD=db.update(TABLE_USER_NAME, values,"id=?", args);
         db.close();
         return retornoBD;
+    }
+
+    //métodos referentes a tabela notas
+    public void insereNote(Note u){
+        db = getWritableDatabase();
+        db.beginTransaction();
+
+        try {
+            ContentValues values = new ContentValues();
+
+            values.put(COL_ID_USER_NOTE, u.getExternIdUser());
+            values.put(COL_TITLE_NOTE, u.getNoteTitle());
+            values.put(COL_TEXT_NOTE, u.getNoteText());
+
+            db.insertOrThrow(TABLE_NOTE_NAME,null, values);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to add post to database");
+        } finally {
+            db.endTransaction();
+        }
     }
 }

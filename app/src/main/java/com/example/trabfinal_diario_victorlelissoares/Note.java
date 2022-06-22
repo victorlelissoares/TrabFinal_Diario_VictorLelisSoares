@@ -44,9 +44,6 @@ public class Note implements Serializable {
 
     @Override
     public String toString() {
-        return "Note{" +
-                "noteTitle='" + noteTitle + '\'' +
-                ", noteText='" + noteText + '\'' +
-                '}';
+        return this.getNoteTitle();
     }
 }

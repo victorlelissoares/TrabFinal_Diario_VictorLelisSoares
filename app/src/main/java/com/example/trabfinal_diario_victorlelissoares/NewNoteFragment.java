@@ -1,64 +1,63 @@
 package com.example.trabfinal_diario_victorlelissoares;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link NewNoteFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
+
+import com.example.trabfinal_diario_victorlelissoares.databinding.FragmentNewNoteBinding;
+
 public class NewNoteFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public NewNoteFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NewNoteFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static NewNoteFragment newInstance(String param1, String param2) {
-        NewNoteFragment fragment = new NewNoteFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private FragmentNewNoteBinding binding;
+    Note newNote;
+    User actualUser;
+    DBHelper db;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(
+            LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState
+    ) {
+
+        binding = FragmentNewNoteBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+
+    }
+
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Bundle bundle = getArguments();
+
+        if (bundle != null){
+            //recupera informações do usuario que está adicionando a nota
+            actualUser = (User) bundle.getSerializable("userOfNote");
         }
+
+        binding.btnSaveNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newNote = new Note();
+                newNote.setExternIdUser(actualUser.getIdUser());
+                newNote.setNoteTitle(binding.txtTitulo.getText().toString());
+                newNote.setNoteText(binding.txtNote.getText().toString());
+                db.insereNote(newNote);
+                NavHostFragment.findNavController(NewNoteFragment.this).navigate(R.id.action_newNoteFragment_to_displayNotesFragment, bundle);
+
+            }
+        });
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_new_note, container, false);
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
+
 }

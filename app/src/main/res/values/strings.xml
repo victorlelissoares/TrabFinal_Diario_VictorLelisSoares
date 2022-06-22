@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TrabFinal_Diario_VictorLelisSoares</string>
+    <string name="app_name">Diário</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -14,6 +14,10 @@
     <string name="loginName">Digite o Email</string>
     <string name="loginPassword">Digite a Senha</string>
     <string name="btnAcess">Acessar</string>
+
+    <string name="btnNewNote">Adicionar nota</string>
+
+    <string name="saveNote">Salvar Nota</string>
 
     <string name="btnRegister">Registrar</string>
     <!-- TODO: Remove or change this placeholder text -->

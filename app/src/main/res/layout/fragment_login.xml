@@ -55,7 +55,7 @@
             android:id="@+id/textView"
             android:layout_width="112dp"
             android:layout_height="31dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="2dp"
             android:text="Registrar"
             app:layout_constraintStart_toStartOf="parent"
