@@ -1,9 +1,11 @@
 package com.example.trabfinal_diario_victorlelissoares;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -53,23 +55,35 @@ public class NewNoteFragment extends Fragment {
         binding.btnSaveNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db = new DBHelper(getContext());
-                if(bundle != null && bundle.containsKey("editNote")){
-                    newNote.setExternIdUser(actualUser.getIdUser());
-                    newNote.setNoteTitle(binding.txtTitulo.getText().toString());
-                    newNote.setNoteText(binding.txtNote.getText().toString());
-                    db.atualizarNote(newNote);
+
+                if(TextUtils.isEmpty(binding.txtTitulo.getText()) || TextUtils.isEmpty(binding.txtNote.getText())) {
+
+                    if(TextUtils.isEmpty(binding.txtTitulo.getText())) {
+                        binding.txtTitulo.setError("Campo de titulo vazio");
+                    }
+
+                    if(TextUtils.isEmpty(binding.txtNote.getText())) {
+                        binding.txtNote.setError("Campo de texto vazio");
+                    }
                 }
                 else {
-                    newNote = new Note();
-                    newNote.setExternIdUser(actualUser.getIdUser());
-                    newNote.setNoteTitle(binding.txtTitulo.getText().toString());
-                    newNote.setNoteText(binding.txtNote.getText().toString());
-                    db.insereNote(newNote);
+                    db = new DBHelper(getContext());
+                    if (bundle != null && bundle.containsKey("editNote")) {
+                        newNote.setExternIdUser(actualUser.getIdUser());
+                        newNote.setNoteTitle(binding.txtTitulo.getText().toString());
+                        newNote.setNoteText(binding.txtNote.getText().toString());
+                        db.atualizarNote(newNote);
+                    } else {
+                        newNote = new Note();
+                        newNote.setExternIdUser(actualUser.getIdUser());
+                        newNote.setNoteTitle(binding.txtTitulo.getText().toString());
+                        newNote.setNoteText(binding.txtNote.getText().toString());
+                        db.insereNote(newNote);
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("userNote", actualUser);
+                    NavHostFragment.findNavController(NewNoteFragment.this).navigate(R.id.action_newNoteFragment_to_displayNotesFragment, bundle);
                 }
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("userNote", actualUser);
-                NavHostFragment.findNavController(NewNoteFragment.this).navigate(R.id.action_newNoteFragment_to_displayNotesFragment, bundle);
 
             }
         });

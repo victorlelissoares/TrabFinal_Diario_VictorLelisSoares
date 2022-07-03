@@ -37,12 +37,13 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //caso o email ou senha estejam vazios
-                if(TextUtils.isEmpty(binding.txtEmail.toString()) || TextUtils.isEmpty(binding.txtPassword.toString())) {
+                if(TextUtils.isEmpty(binding.txtEmail.getText()) ||
+                        TextUtils.isEmpty(binding.txtPassword.getText())) {
 
-                    if(TextUtils.isEmpty(binding.txtEmail.toString()))
+                    if(TextUtils.isEmpty(binding.txtEmail.getText()))
                         binding.txtEmail.setError("Campo de Email vazio");
 
-                    if(TextUtils.isEmpty(binding.txtPassword.toString()))
+                    if(TextUtils.isEmpty(binding.txtPassword.getText()))
                         binding.txtPassword.setError("Campo de Email vazio");
                 }
                 //caso não
