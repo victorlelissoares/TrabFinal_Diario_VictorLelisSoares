@@ -42,11 +42,14 @@ public class NewNoteFragment extends Fragment {
         binding.btnSaveNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                db = new DBHelper(getContext());
                 newNote = new Note();
                 newNote.setExternIdUser(actualUser.getIdUser());
                 newNote.setNoteTitle(binding.txtTitulo.getText().toString());
                 newNote.setNoteText(binding.txtNote.getText().toString());
                 db.insereNote(newNote);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("userOfNote", actualUser);
                 NavHostFragment.findNavController(NewNoteFragment.this).navigate(R.id.action_newNoteFragment_to_displayNotesFragment, bundle);
 
             }

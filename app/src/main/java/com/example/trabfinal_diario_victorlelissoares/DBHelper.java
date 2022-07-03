@@ -11,6 +11,9 @@ import androidx.annotation.Nullable;
 
 import static android.content.ContentValues.TAG;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 
 public class DBHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 2;
@@ -181,4 +184,52 @@ public class DBHelper extends SQLiteOpenHelper {
             db.endTransaction();
         }
     }
+
+    public ArrayList<Note> listNotes(String idUser) {
+        String[] coluns = {"*"};//todas as colunas
+        String[] whereArg = {idUser};
+        Cursor cursor;
+
+        //caso seja nulo
+        if(Objects.isNull(idUser)){
+            cursor = getReadableDatabase().query(
+                    TABLE_NOTE_NAME,
+                    coluns,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
+        }
+        else{
+            cursor = getReadableDatabase().query(
+                    TABLE_NOTE_NAME,
+                    coluns,
+                    COL_ID_USER_NOTE + "=?",
+                    whereArg,
+                    null,
+                    null,
+                    null,
+                    null);
+        }
+
+        /*private static final String TABLE_NOTES_CREATE = "create table " + TABLE_NOTE_NAME +
+                "("+ COL_ID_NOTE + " integer primary key autoincrement, " + COL_ID_USER_NOTE +
+                " integer not null, " + COL_TITLE_NOTE + " text not null, " + COL_TEXT_NOTE +
+                " text not null, " + "FOREIGN KEY(idUser) REFERENCES users(id));";*/
+        ArrayList<Note> list = new ArrayList<Note>();
+        while(cursor.moveToNext()){
+            Note j = new Note();
+            j.setIdNote(cursor.getInt(0));
+            j.setExternIdUser(cursor.getInt(1));
+            j.setNoteTitle(cursor.getString(2));
+            j.setNoteText(cursor.getString(3));
+            list.add(j);
+        }
+        cursor.close();
+        return list;
+    }
+
+
 }
