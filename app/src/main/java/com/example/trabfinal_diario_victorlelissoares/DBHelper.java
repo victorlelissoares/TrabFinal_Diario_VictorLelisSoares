@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import static android.content.ContentValues.TAG;
@@ -143,6 +144,38 @@ public class DBHelper extends SQLiteOpenHelper {
         return use;
     }
 
+    public User buscarUserId(String id_usuario){//email na real
+        db = this.getReadableDatabase();
+        String query = String.format("SELECT %s FROM %s WHERE %s = ?",
+                "*", TABLE_USER_NAME, COL_ID_USERS);//todas as colunas
+        //String senha="não encontrado";
+        db.beginTransaction();
+        User use =  new User();
+        try {
+            Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(id_usuario)});
+            try {
+                if (cursor.moveToFirst()) {
+
+                    use.setIdUser(cursor.getInt(0));
+                    use.setNome(cursor.getString(1));
+                    use.setEmail(cursor.getString(2));
+                    use.setSenha(cursor.getString(3));
+                    //senha = cursor.getString(0);
+                    db.setTransactionSuccessful();
+                }
+            } finally {
+                if (cursor != null && !cursor.isClosed()) {
+                    cursor.close();
+                }
+            }
+        }catch (Exception e) {
+            Log.d(TAG, "Error while trying to add or update user");
+        } finally {
+            db.endTransaction();
+        }
+        return use;
+    }
+
     public long excluirUser(User contato) {
         long retornoBD;
         db = this.getWritableDatabase();
@@ -218,7 +251,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "("+ COL_ID_NOTE + " integer primary key autoincrement, " + COL_ID_USER_NOTE +
                 " integer not null, " + COL_TITLE_NOTE + " text not null, " + COL_TEXT_NOTE +
                 " text not null, " + "FOREIGN KEY(idUser) REFERENCES users(id));";*/
-        ArrayList<Note> list = new ArrayList<Note>();
+        ArrayList<Note> list = new ArrayList<>();
         while(cursor.moveToNext()){
             Note j = new Note();
             j.setIdNote(cursor.getInt(0));
@@ -231,5 +264,27 @@ public class DBHelper extends SQLiteOpenHelper {
         return list;
     }
 
+    public long excluirNote(@NonNull Note contato) {
+        long retornoBD;
+        db = this.getWritableDatabase();
+        String[] args = {String.valueOf(contato.getIdNote())};
+        retornoBD = db.delete(TABLE_NOTE_NAME, COL_ID_NOTE + "=?", args);
+        return retornoBD;
+    }
+
+    public void atualizarNote(@NonNull Note j){
+        db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COL_ID_NOTE, j.getIdNote());
+        values.put(COL_ID_USER_NOTE, j.getExternIdUser());
+        values.put(COL_TITLE_NOTE, j.getNoteTitle());
+        values.put(COL_TEXT_NOTE, j.getNoteText());
+
+
+        String[] args = {String.valueOf(j.getIdNote())};
+        long retornoDB = db.update(TABLE_NOTE_NAME, values,  COL_ID_NOTE +" = ?", args);
+        db.close();
+    }
 
 }

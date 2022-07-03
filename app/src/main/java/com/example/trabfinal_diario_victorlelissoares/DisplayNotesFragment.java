@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -27,12 +28,13 @@ public class DisplayNotesFragment extends Fragment {
     private FragmentDisplayNotesBinding binding;
     User actualUser;
     DBHelper db;
+    Note deleteNote;
     ArrayList <Note> notesOfUser;
     ArrayAdapter <Note> adapterOfNotes;
 
     @Override
     public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
+            @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
         binding = FragmentDisplayNotesBinding.inflate(inflater, container, false);
@@ -91,12 +93,27 @@ public class DisplayNotesFragment extends Fragment {
         binding.btnNewNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                assert bundle != null;
                 bundle.putSerializable("userOfNote", actualUser);
                 NavHostFragment.findNavController(DisplayNotesFragment.this).navigate(R.id.action_displayNotesFragment_to_newNoteFragment, bundle);
             }
         });
 
-
+        binding.listNotes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView,View view, int
+                    position, long id){
+                deleteNote = adapterOfNotes.getItem(position);
+                //preenche o spinner
+                String id_ = String.valueOf(actualUser.getIdUser());
+                notesOfUser = db.listNotes(id_);
+                db.close();
+                adapterOfNotes = new ArrayAdapter<>(getContext(),
+                        android.R.layout.simple_list_item_1, notesOfUser);
+                binding.listNotes.setAdapter(adapterOfNotes);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -104,18 +121,21 @@ public class DisplayNotesFragment extends Fragment {
                                     @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         MenuItem mDelete = menu.add(Menu.NONE, 1, 1,"Deletar Nota");
         MenuItem mEdita = menu.add(Menu.NONE, 2, 2,"Editar Nota");
-        MenuItem mSair = menu.add(Menu.NONE, 3, 3,"Cancelar");
+        menu.add(Menu.NONE, 3, 3,"Cancelar");
         mDelete.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-
+                long returnDb = db.excluirNote(deleteNote);
+                db.close();
                 return false; }
         });
 
         mEdita.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("editNote", deleteNote);
+                NavHostFragment.findNavController(DisplayNotesFragment.this).navigate(R.id.action_displayNotesFragment_to_newNoteFragment, bundle);
                 return false;
             }
         });

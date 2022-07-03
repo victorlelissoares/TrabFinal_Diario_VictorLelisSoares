@@ -35,21 +35,40 @@ public class NewNoteFragment extends Fragment {
         Bundle bundle = getArguments();
 
         if (bundle != null){
-            //recupera informações do usuario que está adicionando a nota
-            actualUser = (User) bundle.getSerializable("userOfNote");
+            if (bundle.containsKey("editNote")){
+                actualUser = new User();
+                newNote = (Note) bundle.getSerializable("editNote");
+                db = new DBHelper(getContext());
+                actualUser = db.buscarUserId(String.valueOf(newNote.getExternIdUser()));
+                binding.txtTitulo.setText(newNote.getNoteTitle());
+                binding.txtNote.setText(newNote.getNoteText());
+                binding.btnSaveNote.setText("Editar nota");
+            }
+            else {
+                //recupera informações do usuario que está adicionando a nota
+                actualUser = (User) bundle.getSerializable("userOfNote");
+            }
         }
 
         binding.btnSaveNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 db = new DBHelper(getContext());
-                newNote = new Note();
-                newNote.setExternIdUser(actualUser.getIdUser());
-                newNote.setNoteTitle(binding.txtTitulo.getText().toString());
-                newNote.setNoteText(binding.txtNote.getText().toString());
-                db.insereNote(newNote);
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("userOfNote", actualUser);
+                if(bundle != null && bundle.containsKey("editNote")){
+                    newNote.setExternIdUser(actualUser.getIdUser());
+                    newNote.setNoteTitle(binding.txtTitulo.getText().toString());
+                    newNote.setNoteText(binding.txtNote.getText().toString());
+                    db.atualizarNote(newNote);
+                }
+                else {
+                    newNote = new Note();
+                    newNote.setExternIdUser(actualUser.getIdUser());
+                    newNote.setNoteTitle(binding.txtTitulo.getText().toString());
+                    newNote.setNoteText(binding.txtNote.getText().toString());
+                    db.insereNote(newNote);
+                }
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("userNote", actualUser);
                 NavHostFragment.findNavController(NewNoteFragment.this).navigate(R.id.action_newNoteFragment_to_displayNotesFragment, bundle);
 
             }
