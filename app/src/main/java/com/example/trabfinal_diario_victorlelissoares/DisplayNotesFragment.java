@@ -28,6 +28,7 @@ public class DisplayNotesFragment extends Fragment {
     Note deleteNote;
     ArrayList <Note> notesOfUser;
     ArrayAdapter <Note> adapterOfNotes;
+    String id_;
 
     @Override
     public View onCreateView(
@@ -49,20 +50,15 @@ public class DisplayNotesFragment extends Fragment {
             actualUser = (User) bundle.getSerializable("userNote");
             binding.txtNome.setText("Bem vindo (a), " + actualUser.getNome());
             //preenche o list view com as notas registradas
-            String id = String.valueOf(actualUser.getIdUser());
+            id_ = String.valueOf(actualUser.getIdUser());
 
             //caso o bundle venha do fragmento de adicionar notas
             //significa que tem notas para serem mostradas
 
             //getBundle retorna null se não tem nenhum valor associado a chave
             try{
-                notesOfUser = db.listNotes(id);
-                db.close();
+                preencheView(id_);
 
-                adapterOfNotes = new ArrayAdapter<>(getContext(),
-                        android.R.layout.simple_list_item_1, notesOfUser);
-
-                binding.listNotes.setAdapter(adapterOfNotes);
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -83,13 +79,7 @@ public class DisplayNotesFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> adapterView,View view, int
                     position, long id){
                 deleteNote = adapterOfNotes.getItem(position);
-                //preenche o spinner
-                String id_ = String.valueOf(actualUser.getIdUser());
-                notesOfUser = db.listNotes(id_);
-                db.close();
-                adapterOfNotes = new ArrayAdapter<>(getContext(),
-                        android.R.layout.simple_list_item_1, notesOfUser);
-                binding.listNotes.setAdapter(adapterOfNotes);
+
                 return false;
             }
         });
@@ -106,6 +96,7 @@ public class DisplayNotesFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 long returnDb = db.excluirNote(deleteNote);
                 db.close();
+                preencheView(id_);
                 return false; }
         });
 
@@ -114,6 +105,7 @@ public class DisplayNotesFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("editNote", deleteNote);
+                preencheView(id_);
                 NavHostFragment.findNavController(DisplayNotesFragment.this).navigate(R.id.action_displayNotesFragment_to_newNoteFragment, bundle);
                 return false;
             }
@@ -125,6 +117,15 @@ public class DisplayNotesFragment extends Fragment {
 
 
     }
+
+    public void preencheView(String id_){
+        notesOfUser = db.listNotes(id_);
+        db.close();
+        adapterOfNotes = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_list_item_1, notesOfUser);
+        binding.listNotes.setAdapter(adapterOfNotes);
+    }
+
 
     @Override
     public void onDestroyView() {

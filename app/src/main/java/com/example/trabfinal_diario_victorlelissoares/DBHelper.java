@@ -118,12 +118,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 "*", TABLE_USER_NAME, COL_EMAIL_USERS);//todas as colunas
         //String senha="não encontrado";
         db.beginTransaction();
-        User use =  new User();
+        User use = null;
         try {
             Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(usuario)});
             try {
                 if (cursor.moveToFirst()) {
-
+                    use =  new User();
                     use.setIdUser(cursor.getInt(0));
                     use.setNome(cursor.getString(1));
                     use.setEmail(cursor.getString(2));
