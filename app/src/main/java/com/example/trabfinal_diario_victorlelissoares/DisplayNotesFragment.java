@@ -14,14 +14,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.trabfinal_diario_victorlelissoares.databinding.FragmentDisplayNotesBinding;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class DisplayNotesFragment extends Fragment {
 
