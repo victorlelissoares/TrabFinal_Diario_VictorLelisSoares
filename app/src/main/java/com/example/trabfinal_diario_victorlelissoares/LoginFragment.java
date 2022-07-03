@@ -44,7 +44,7 @@ public class LoginFragment extends Fragment {
                         binding.txtEmail.setError("Campo de Email vazio");
 
                     if(TextUtils.isEmpty(binding.txtPassword.getText()))
-                        binding.txtPassword.setError("Campo de Email vazio");
+                        binding.txtPassword.setError("Campo de Senha vazio");
                 }
                 //caso não
                 else{

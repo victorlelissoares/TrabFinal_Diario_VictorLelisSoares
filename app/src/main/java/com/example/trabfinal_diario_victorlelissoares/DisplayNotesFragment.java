@@ -50,9 +50,7 @@ public class DisplayNotesFragment extends Fragment {
             binding.txtNome.setText("Bem vindo (a), " + actualUser.getNome());
             //preenche o list view com as notas registradas
             String id = String.valueOf(actualUser.getIdUser());
-            Toast toast = Toast.makeText(getContext(),
-                    "1 if " + id, Toast.LENGTH_LONG);
-            toast.show();
+
             //caso o bundle venha do fragmento de adicionar notas
             //significa que tem notas para serem mostradas
 
@@ -68,23 +66,7 @@ public class DisplayNotesFragment extends Fragment {
             }catch (Exception e){
                 e.printStackTrace();
             }
-            /*if(bundle.getBundle("userOfNote") != null) {
-                toast = Toast.makeText(getContext(),
-                        "2 if" + id, Toast.LENGTH_LONG);
-                toast.show();
-                notesOfUser = db.listNotes(id);
-                db.close();
-            }
-            //caso a lista não esteja vazia
-            if(notesOfUser != null){
-                toast = Toast.makeText(getContext(),
-                        "3 if" + id, Toast.LENGTH_LONG);
-                toast.show();
-                adapterOfNotes = new ArrayAdapter<>(getContext(),
-                        android.R.layout.simple_list_item_1, notesOfUser);
 
-                binding.listNotes.setAdapter(adapterOfNotes);
-            }*/
         }
 
         binding.btnNewNote.setOnClickListener(new View.OnClickListener() {
